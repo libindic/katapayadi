@@ -7,7 +7,6 @@ name = "katapayadi"
 setup(
     name=name,
     version="0.1.0",
-    url="http://silpa.org.in/TTS",
     license="LGPL-3.0",
     description="Decode katapayadi number system",
     author="Santhosh Thottingal",
@@ -24,5 +23,6 @@ setup(
     include_package_data=True,
     setup_requires=['setuptools-git'],
     install_requires=['setuptools'],
+    test_suite='tests',
     zip_safe=False,
 )

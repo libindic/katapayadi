@@ -22,11 +22,18 @@
 # URL: http://www.smc.org.in
 
 from silpa_common import *
-import syllabalizer
+import indicsyllabifier
 from json import dumps
-class Katapayadi:
 
+class Katapayadi:
+    """Katapayadi class. Instantiate to access the methods.
+    """
     def get_number(self, word):
+        """get the number corressponding to the katapayadi word
+        :param word: The katapayadi number system word
+        :type word: str.
+        :returns: returns the corresponding arabic numeral
+        """
         word = word.strip()
         word = word.split(" ")[0]
         lang_ka_bases = {'hi_IN': 0x0915, 'bn_IN': 0x0995,
@@ -34,7 +41,7 @@ class Katapayadi:
                         'or_IN': 0x0B15, 'ta_IN': 0x0B95,
                         'te_IN': 0x0C15, 'ka_IN': 0x0C95,
                         'ml_IN': 0x0D15}
-        syllablizer_handle = syllabalizer.getInstance()
+        syllablizer_handle = indicsyllabifier.getInstance()
         syllables = syllablizer_handle.syllabify(word)
         number = ""
         # Check if the dectected language is in list. If not, display unsupported langusge
@@ -67,6 +74,9 @@ class Katapayadi:
         return "0"
 
     def get_swarasthanas(self, raga):
+        """
+        get the swarasthana of the raga
+        """
         swarasthans = ["Sa"]
         try:
             number = int(str(raga))
@@ -123,9 +133,15 @@ class Katapayadi:
         return dumps(swarasthans)
 
     def get_module_name(self):
+        """
+        get the module name
+        """
         return "Katapayadi Number System"
 
     def get_info(self):
+        """
+        get more info on the module
+        """
         return "Decodes the numbers from the katapayadi numbering system"
 
 
