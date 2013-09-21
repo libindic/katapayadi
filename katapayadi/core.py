@@ -23,7 +23,6 @@
 
 from silpa_common import *
 import indicsyllabifier
-from json import dumps
 
 class Katapayadi:
     """Katapayadi class. Instantiate to access the methods.
@@ -130,7 +129,7 @@ class Katapayadi:
             swarasthans.append("Da3")
             swarasthans.append("Ni3")
         swarasthans.append("Sa")
-        return dumps(swarasthans)
+        return swarasthans
 
     def get_module_name(self):
         """
