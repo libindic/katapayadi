@@ -26,6 +26,15 @@ Melakarta raga from the first two syllables of the name of the Raga.
 The algorithm used in this is explained in detail here:
  `An Algorithm to derive the Swarasthanas <http://en.wikipedia.org/wiki/Katapayadi_sankhya#An_Algorithm_to_derive_the_Swarasthanas>`_
 
+Usage
+--------
+
+ >>> from katapayadi import getInstance
+ >>> k = getInstance()
+ >>> k.get_number(u"കമല")
+ 351
+ >>> k.get_swarasthanas(1)
+ ['Sa', 'Ri1', 'Ga1', 'Ma1', 'Pa', 'Da1', 'Ni1', 'Sa']
 
 API referece
 ------------

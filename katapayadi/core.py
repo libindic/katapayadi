@@ -29,6 +29,7 @@ class Katapayadi:
     """
     def get_number(self, word):
         """get the number corressponding to the katapayadi word
+
         :param word: The katapayadi number system word
         :type word: str.
         :returns: returns the corresponding arabic numeral
