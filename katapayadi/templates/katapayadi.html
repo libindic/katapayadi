@@ -65,7 +65,7 @@ function ragadetails()
         },
         success: function(msg) {
             $('#ragaprogress').hide();
-            resulthtml += "Swarasthanas: <b>" + eval( '(' + msg.result + ')')  + "</b>";
+            resulthtml += "Swarasthanas: <b>" +  msg.result   + "</b>";
             // Render it
             $('#ragaresult').show().html(resulthtml);
         },
