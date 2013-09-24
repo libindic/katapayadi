@@ -2,82 +2,79 @@
 {% block modulescript%}
 <script type="text/javascript">
 $(document).ready(function(){
-$("#katapayadiform").submit(function(event){
-event.preventDefault();
-katapayadiform();
-})
-$("#ragaform").submit(function(event){
-event.preventDefault();
-ragadetails();
-})
+    $("#katapayadiform").submit(function(event){
+        event.preventDefault();
+        katapayadiform();
+        })
+    $("#ragaform").submit(function(event){
+        event.preventDefault();
+        ragadetails();
+    })
+});
 
-})
-  function katapayadiform()
-  {
-  var word= $("input[name=word]").val();
-  var jsonRequest = {
-  "method" :  "katapayadi.get_number",
-  "params" : [word],
-  "id" : ""
-  };
-$.ajax({
-type: "POST",
-contentType: "application/json; charset=utf-8",
-url: "JSONRPC",
-data: JSON.stringify(jsonRequest),
-dataType: "json",
-beforeSend: function(){
-
-$('#kataprogress').show().html("Please wait...");
-$('#kataerror').hide();
-$("#katasuccess").hide();
-$("#kataresult").hide();
-},
-success: function(msg) {
-$('#kataprogress').hide();
-// Render it
-$('#kataresult').html("The decoded number is: <b>" + msg.result + "</b>").show();
-  },
-  error: function(msg) {
-$('#kataprogress') .hide();
-$('#kataerror').html("Something went wrong").show();
-
- }
+function katapayadiform()
+{
+    var word= $("input[name=word]").val();
+    var jsonRequest = {
+      "method" :  "katapayadi.get_number",
+      "params" : [word],
+      "id" : ""
+    };
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "JSONRPC",
+        data: JSON.stringify(jsonRequest),
+        dataType: "json",
+        beforeSend: function(){
+            $('#kataprogress').show().html("Please wait...");
+            $('#kataerror').hide();
+            $("#katasuccess").hide();
+            $("#kataresult").hide();
+        },
+        success: function(msg) {
+            $('#kataprogress').hide();
+            // Render it
+            $('#kataresult').html("The decoded number is: <b>" + msg.result + "</b>").show();
+        },
+        error: function(msg) {
+            $('#kataprogress') .hide();
+            $('#kataerror').html("Something went wrong").show();
+         }
   });
-  }
-  function ragadetails()
-  {
-  var number= $("select[name=raga]").val();
-  var resulthtml = "Selected Raga is Melakarta Raga Number <b>" +number+ "</b>.<br/>"
-  var jsonRequest = {
-  "method" :  "katapayadi.get_swarasthanas",
-  "params" : [number],
-  "id" : ""
-  };
-  $.ajax({
-  type: "POST",
-  contentType: "application/json; charset=utf-8",
-  url: "JSONRPC",
-  data: JSON.stringify(jsonRequest),
-  dataType: "json",
-beforeSend:function(){
-  $('#ragaprogress').show().html("Checking. Please Wait..");
-  $('#ragaresult').hide()
-  $('#ragaerror').hide()
+};
+function ragadetails()
+{
+    var number= $("select[name=raga]").val(),
+        resulthtml = "Selected Raga is Melakarta Raga Number <b>" +number+ "</b>.<br/>",
+        jsonRequest = {
+            "method" :  "katapayadi.get_swarasthanas",
+            "params" : [number],
+            "id" : ""
+        };
+    $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "JSONRPC",
+        data: JSON.stringify(jsonRequest),
+        dataType: "json",
+        beforeSend:function(){
+            $('#ragaprogress').show().html("Checking. Please Wait..");
+            $('#ragaresult').hide()
+            $('#ragaerror').hide()
+        },
+        success: function(msg) {
+            $('#ragaprogress').hide();
+            resulthtml += "Swarasthanas: <b>" + eval( '(' + msg.result + ')')  + "</b>";
+            // Render it
+            $('#ragaresult').show().html(resulthtml);
+        },
+        error: function(msg) {
+            $("#ragaprogress").hide();
+            $("#ragaerror").show().html("Something went wrong")}
+        });
+    return false;
 }
-,
-  success: function(msg) {
-  $('#ragaprogress').hide();
-  resulthtml += "Swarasthanas: <b>" + eval( '(' + msg.result + ')')  + "</b>";
-  // Render it
-  $('#ragaresult').show().html(resulthtml);
-  },
-error: function(msg) {$("#ragaprogress").hide();
-$("#ragaerror").show().html("Something went wrong")}
-  });
-
-  return false;
-  }
 </script>
 {% endblock %}
 {% block content %}
