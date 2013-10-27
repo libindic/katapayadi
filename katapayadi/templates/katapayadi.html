@@ -4,187 +4,194 @@
 $(document).ready(function(){
     $("#katapayadiform").submit(function(event){
         event.preventDefault();
-        katapayadiform();
-        })
+        var word= $("input[name=word]").val();
+        var jsonRequest = {
+          "method" :  "katapayadi.get_number",
+          "params" : [word],
+          "id" : ""
+        };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "JSONRPC",
+            data: JSON.stringify(jsonRequest),
+            dataType: "json",
+            beforeSend: function(){
+                $('#kataprogress').show().html("Please wait...");
+                $('#kataerror').hide();
+                $("#katasuccess").hide();
+                $("#kataresult").hide();
+            },
+            success: function(msg) {
+                $('#kataprogress').hide();
+                // Render it
+                $('#kataresult').html("The decoded number is: <b>" + msg.result + "</b>").show();
+            },
+            error: function(msg) {
+                $('#kataprogress') .hide();
+                $('#kataerror').html("Something went wrong").show();
+             }
+        });
+    })
+
     $("#ragaform").submit(function(event){
         event.preventDefault();
-        ragadetails();
+        var number= $("select[name=raga]").val(),
+            resulthtml = "Selected Raga is Melakarta Raga Number <b>" +number+ "</b>.<br/>",
+            jsonRequest = {
+                "method" :  "katapayadi.get_swarasthanas",
+                "params" : [number],
+                "id" : ""
+            };
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: "JSONRPC",
+            data: JSON.stringify(jsonRequest),
+            dataType: "json",
+            beforeSend:function(){
+                $('#ragaprogress').show().html("Checking. Please Wait..");
+                $('#ragaresult').hide()
+                $('#ragaerror').hide()
+            },
+            success: function(msg) {
+                $('#ragaprogress').hide();
+                resulthtml += "Swarasthanas: <b>" +  msg.result   + "</b>";
+                $('#ragaresult').show().html(resulthtml);
+            },
+            error: function(msg) {
+                $("#ragaprogress").hide();
+                $("#ragaerror").show().html("Something went wrong");
+            }
+        });
     })
 });
 
-function katapayadiform()
-{
-    var word= $("input[name=word]").val();
-    var jsonRequest = {
-      "method" :  "katapayadi.get_number",
-      "params" : [word],
-      "id" : ""
-    };
-    $.ajax({
-        type: "POST",
-        contentType: "application/json; charset=utf-8",
-        url: "JSONRPC",
-        data: JSON.stringify(jsonRequest),
-        dataType: "json",
-        beforeSend: function(){
-            $('#kataprogress').show().html("Please wait...");
-            $('#kataerror').hide();
-            $("#katasuccess").hide();
-            $("#kataresult").hide();
-        },
-        success: function(msg) {
-            $('#kataprogress').hide();
-            // Render it
-            $('#kataresult').html("The decoded number is: <b>" + msg.result + "</b>").show();
-        },
-        error: function(msg) {
-            $('#kataprogress') .hide();
-            $('#kataerror').html("Something went wrong").show();
-         }
-  });
-};
 function ragadetails()
 {
-    var number= $("select[name=raga]").val(),
-        resulthtml = "Selected Raga is Melakarta Raga Number <b>" +number+ "</b>.<br/>",
-        jsonRequest = {
-            "method" :  "katapayadi.get_swarasthanas",
-            "params" : [number],
-            "id" : ""
-        };
-    $.ajax({
-        type: "POST",
-        contentType: "application/json; charset=utf-8",
-        url: "JSONRPC",
-        data: JSON.stringify(jsonRequest),
-        dataType: "json",
-        beforeSend:function(){
-            $('#ragaprogress').show().html("Checking. Please Wait..");
-            $('#ragaresult').hide()
-            $('#ragaerror').hide()
-        },
-        success: function(msg) {
-            $('#ragaprogress').hide();
-            resulthtml += "Swarasthanas: <b>" +  msg.result   + "</b>";
-            // Render it
-            $('#ragaresult').show().html(resulthtml);
-        },
-        error: function(msg) {
-            $("#ragaprogress").hide();
-            $("#ragaerror").show().html("Something went wrong")}
-        });
-    return false;
+
 }
 </script>
 {% endblock %}
+
 {% block content %}
-<div class="well">  <h2>Katapayadi writing method</h2></hr>
-  <p><a href="http://en.wikipedia.org/wiki/Katapayadi_sankhya">Katapayadi sankhya</a> is a simplification of <a href="http://en.wikipedia.org/wiki/Aryabhata">Aryabhata's</a>
-    <a href="http://en.wikipedia.org/wiki/Sanskrit_numerals">Sanskrit numerals</a>, due
-    probably to <a href="http://www.google.com/search?hl=en&q=Haridatta&btnG=Google+Search">Haridatta</a> from
-    Kerala. In Malayalam it is also known as 'Paralperu'
-  </p>
-  <p>For eg: &#3354;&#3363;&#3405;&#3361;&#3390;&#3330;&#3382;&#3393;&#3354;&#3368;&#3405;&#3366;&#3405;&#3376;&#3390;&#3367;&#3374;&#3349;&#3393;&#3330;&#3373;&#3391;&#3370;&#3390;&#3378;
-    represents 31415926536 which is &#960;*1000000000000000</p>
-  <p>More examples in Malayalam are given in <a href="http://ml.wikipedia.org/wiki/Paralperu">this page</a></p>
-  <form id="katapayadiform" action="" method="post" >
-    <p align="center">
-      Word in Katapayadi form : <input type="text"  name="word" style="width:12em;"/>
-      <input  type="submit" id="convert" value="Convert"
-      style="width:12em;"  class="btn btn-primary" />
-        </br>
-    </p>
-  </form>
-  <div class="alert hide alert-info " id="kataprogress"></div>
-  <div class="alert hide alert-success " id="kataresult"></div>
-  <div class="alert hide alert-error " id="kataerror"></div>
-</div><div class="well">
-  <h2>Swarasthana of Melakartha Raga</h2></hr>
-  <p>The Katapayadi sankhya is a way of determining the number of a
-    <a href="http://en.wikipedia.org/wiki/Melakarta"> Melakarta raga </a> from the first two
-    syllables of the name of the  <a href="http://en.wikipedia.org/wiki/Raga">Raga</a>.</p>
-  <form id="ragaform"   >
-    Select a Melakarta Raga : <select id="raga" name="raga" style="width:12em;">
-      <option value="1">Kanagangi</option>
-      <option value="2">Ratnangi</option>
-      <option value="3">Ganamoorti</option>
-      <option value="4">Vanaspati</option>
-      <option value="5">Manavati</option>
-      <option value="6">Tanaroopi</option>
-      <option value="7">Senavati</option>
-      <option value="8">Hanumatodi</option>
-      <option value="9">Dhenuka</option>
-      <option value="10">Natakapriya</option>
-      <option value="11">Kokilapriya</option>
-      <option value="12">Roopavati</option>
-      <option value="13">Gayakapriya</option>
-      <option value="14">Vakulabharanam</option>
-      <option value="15">Mayamalavagowla</option>
-      <option value="16">Chakravakam</option>
-      <option value="17">Sooryakantam</option>
-      <option value="18">Hatakambari </option>
-      <option value="19">Jhankaradhwani</option>
-      <option value="20">Natabhairavi</option>
-      <option value="21">Keeravani</option>
-      <option value="22">Kharaharapriya</option>
-      <option value="23">Gourimanohari</option>
-      <option value="24">Varunapriya</option>
-      <option value="25">Mararanjani</option>
-      <option value="26">Charukesi</option>
-      <option value="27">Sarasangi</option>
-      <option value="28">Harikambhoji</option>
-      <option value="29">Dheerasankarabharanam</option>
-      <option value="30">Naganandini</option>
-      <option value="31">Yagapriya</option>
-      <option value="32">Ragavardhini</option>
-      <option value="33">Gangeyabhooshani</option>
-      <option value="34">Vagadheeswari</option>
-      <option value="35">Shoolini</option>
-      <option value="36">Chalanata</option>
-      <option value="37">Salagam</option>
-      <option value="38">Jalarnavam</option>
-      <option value="39">Jhalavarali</option>
-      <option value="40">Navaneetam</option>
-      <option value="41">Pavani</option>
-      <option value="42">Raghupriya</option>
-      <option value="43">Gavambhodi</option>
-      <option value="44">Bhavapriya</option>
-      <option value="45">Shubhapantuvarali</option>
-      <option value="46">Shadvidamargini</option>
-      <option value="47">Suvarnangi</option>
-      <option value="48">Divyamani</option>
-      <option value="49">Dhavalambari</option>
-      <option value="50">Namanarayani</option>
-      <option value="51">Kamavardani</option>
-      <option value="52">Ramapriya</option>
-      <option value="53">Gamanashrama</option>
-      <option value="54">Vishwambari</option>
-      <option value="55">Shamalangi</option>
-      <option value="56">Shanmukhapriya</option>
-      <option value="57">Simhendramadhyamam</option>
-      <option value="58">Hemavati</option>
-      <option value="59">Dharmavati</option>
-      <option value="60">Neetimati</option>
-      <option value="61">Kantamani</option>
-      <option value="62">Rishabhapriya</option>
-      <option value="63">Latangi</option>
-      <option value="64">Vachaspati</option>
-      <option value="65">Mechakalyani</option>
-      <option value="66">Chitrambari</option>
-      <option value="67">Sucharitra</option>
-      <option value="68">Jyotiswaroopini</option>
-      <option value="69">Dhatuvardani</option>
-      <option value="70">Nasikabhooshani</option>
-      <option value="71">Kosalam</option>
-      <option value="72">Rasikapriya</option>
-    </select>
-    <input  id="details" value="Get Details" type="submit" class="btn btn-primary" />
-  </form>
-  <p>The algorithm used in this is explained in detail here:  <a href="http://en.wikipedia.org/wiki/Katapayadi_sankhya#An_Algorithm_to_derive_the_Swarasthanas">An Algorithm to derive the Swarasthanas</a></p>
-  <hr/>
-  <div class="alert hide alert-info"id="ragaprogress"></div>
-  <div class="alert hide alert"id="ragasuccess"></div>
-  <div class="alert hide alert"id="ragaerror"></div>
-  <div class="alert hide alert-success"id="ragaresult"></div>
+<div class="page-header">
+    <h2>Katapayadi writing method</h2>
 </div>
+
+<p><a href="http://en.wikipedia.org/wiki/Katapayadi_sankhya">Katapayadi sankhya</a> is a simplification of <a href="http://en.wikipedia.org/wiki/Aryabhata">Aryabhata's</a> <a href="http://en.wikipedia.org/wiki/Sanskrit_numerals">Sanskrit numerals</a>, due probably to <a href="http://www.google.com/search?hl=en&q=Haridatta&btnG=Google+Search">Haridatta</a> from Kerala. In Malayalam it is also known as 'Paralperu'</p>
+
+<pre>For eg: &#3354;&#3363;&#3405;&#3361;&#3390;&#3330;&#3382;&#3393;&#3354;&#3368;&#3405;&#3366;&#3405;&#3376;&#3390;&#3367;&#3374;&#3349;&#3393;&#3330;&#3373;&#3391;&#3370;&#3390;&#3378;
+represents 31415926536 which is &#960;*1000000000000000</pre>
+
+<p>More examples in Malayalam are given in <a href="http://ml.wikipedia.org/wiki/Paralperu">this page</a></p>
+
+<form id="katapayadiform" method="post" class="form-inline form-group">
+    <div class="form-group">
+        <label for="word">Word</label>
+    </div>
+    <div class="form-group">
+        <input type="text" name="word" class="form-control"/>
+    </div>
+    <button type="submit" id="convert" class="btn btn-default">Convert</button>
+</form>
+
+<div class="alert alert-info silpa-hide" id="kataprogress"></div>
+<div class="alert alert-success silpa-hide" id="kataresult"></div>
+<div class="alert alert-danger silpa-hide" id="kataerror"></div>
+
+<div class="page-header">
+    <h2>Swarasthana of Melakartha Raga</h2>
+</div>
+
+<p>The Katapayadi sankhya is a way of determining the number of a <a href="http://en.wikipedia.org/wiki/Melakarta"> Melakarta raga </a> from the first two
+syllables of the name of the  <a href="http://en.wikipedia.org/wiki/Raga">Raga</a>.</p>
+<form id="ragaform" class="form-inline">
+    <div class="form-group">
+        <label for="raga">Select a Melakarta Raga</label>
+    </div>
+    <div class="form-group">
+        <select id="raga" name="raga" class="form-control">
+            <option value="1">Kanagangi</option>
+            <option value="2">Ratnangi</option>
+            <option value="3">Ganamoorti</option>
+            <option value="4">Vanaspati</option>
+            <option value="5">Manavati</option>
+            <option value="6">Tanaroopi</option>
+            <option value="7">Senavati</option>
+            <option value="8">Hanumatodi</option>
+            <option value="9">Dhenuka</option>
+            <option value="10">Natakapriya</option>
+            <option value="11">Kokilapriya</option>
+            <option value="12">Roopavati</option>
+            <option value="13">Gayakapriya</option>
+            <option value="14">Vakulabharanam</option>
+            <option value="15">Mayamalavagowla</option>
+            <option value="16">Chakravakam</option>
+            <option value="17">Sooryakantam</option>
+            <option value="18">Hatakambari </option>
+            <option value="19">Jhankaradhwani</option>
+            <option value="20">Natabhairavi</option>
+            <option value="21">Keeravani</option>
+            <option value="22">Kharaharapriya</option>
+            <option value="23">Gourimanohari</option>
+            <option value="24">Varunapriya</option>
+            <option value="25">Mararanjani</option>
+            <option value="26">Charukesi</option>
+            <option value="27">Sarasangi</option>
+            <option value="28">Harikambhoji</option>
+            <option value="29">Dheerasankarabharanam</option>
+            <option value="30">Naganandini</option>
+            <option value="31">Yagapriya</option>
+            <option value="32">Ragavardhini</option>
+            <option value="33">Gangeyabhooshani</option>
+            <option value="34">Vagadheeswari</option>
+            <option value="35">Shoolini</option>
+            <option value="36">Chalanata</option>
+            <option value="37">Salagam</option>
+            <option value="38">Jalarnavam</option>
+            <option value="39">Jhalavarali</option>
+            <option value="40">Navaneetam</option>
+            <option value="41">Pavani</option>
+            <option value="42">Raghupriya</option>
+            <option value="43">Gavambhodi</option>
+            <option value="44">Bhavapriya</option>
+            <option value="45">Shubhapantuvarali</option>
+            <option value="46">Shadvidamargini</option>
+            <option value="47">Suvarnangi</option>
+            <option value="48">Divyamani</option>
+            <option value="49">Dhavalambari</option>
+            <option value="50">Namanarayani</option>
+            <option value="51">Kamavardani</option>
+            <option value="52">Ramapriya</option>
+            <option value="53">Gamanashrama</option>
+            <option value="54">Vishwambari</option>
+            <option value="55">Shamalangi</option>
+            <option value="56">Shanmukhapriya</option>
+            <option value="57">Simhendramadhyamam</option>
+            <option value="58">Hemavati</option>
+            <option value="59">Dharmavati</option>
+            <option value="60">Neetimati</option>
+            <option value="61">Kantamani</option>
+            <option value="62">Rishabhapriya</option>
+            <option value="63">Latangi</option>
+            <option value="64">Vachaspati</option>
+            <option value="65">Mechakalyani</option>
+            <option value="66">Chitrambari</option>
+            <option value="67">Sucharitra</option>
+            <option value="68">Jyotiswaroopini</option>
+            <option value="69">Dhatuvardani</option>
+            <option value="70">Nasikabhooshani</option>
+            <option value="71">Kosalam</option>
+            <option value="72">Rasikapriya</option>
+        </select>
+    </div>
+    <input  id="details" value="Get Details" type="submit" class="btn btn-default" />
+</form>
+
+  <p>The algorithm used in this is explained in detail here:  <a href="http://en.wikipedia.org/wiki/Katapayadi_sankhya#An_Algorithm_to_derive_the_Swarasthanas">An Algorithm to derive the Swarasthanas</a></p>
+  <div class="alert silpa-hide alert-info"id="ragaprogress"></div>
+  <div class="alert silpa-hide alert"id="ragasuccess"></div>
+  <div class="alert silpa-hide alert"id="ragaerror"></div>
+  <div class="alert silpa-hide alert-success"id="ragaresult"></div>
 {% endblock %}
