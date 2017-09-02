@@ -1,0 +1,2 @@
+indicsyllabifier
+silpa_common
