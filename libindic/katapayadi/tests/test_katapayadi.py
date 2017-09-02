@@ -24,3 +24,8 @@ class KatapayadiTest(TestCase):
 
     def test_swarasthana(self):
         self.assertEqual(self.katapayadi.get_swarasthanas(1)[2], "Ga1")
+        self.assertEqual(self.katapayadi.get_swarasthanas(2)[2], "Ga1")
+        self.assertEqual(self.katapayadi.get_swarasthanas(3)[2], "Ga1")
+        self.assertEqual(self.katapayadi.get_swarasthanas(4)[2], "Ga1")
+        self.assertEqual(self.katapayadi.get_swarasthanas(5)[2], "Ga1")
+        self.assertEqual(self.katapayadi.get_swarasthanas(6)[2], "Ga1")
