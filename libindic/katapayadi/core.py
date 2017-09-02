@@ -21,7 +21,7 @@
 # If you find any bugs or have any suggestions email: santhosh.thottingal@gmail.com
 # URL: http://www.smc.org.in
 
-from silpa_common import *
+from silpa_common import langdetect
 import indicsyllabifier
 
 class Katapayadi:
@@ -46,9 +46,10 @@ class Katapayadi:
         number = ""
         # Check if the dectected language is in list. If not, display unsupported langusge
         try:
-            src_lang_code = detect_lang(word)[word]
+            src_lang_code = langdetect.detect_lang(word)[word]
             base = lang_ka_bases[src_lang_code]
-        except:
+        except Exception as e:
+            print e
             return "Unsupported Language"
         for cluster in syllables:
             number = (self.__get_number_for_syllable(cluster, base)
