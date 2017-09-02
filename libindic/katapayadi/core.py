@@ -188,7 +188,7 @@ class Katapayadi:
         remainder = (melakartha_number - 1) % 6
         quotient = quotient % 6
         swarasthans = self.set_swarasthans(
-            swarasthans, melakartha_number, quotient, remainder)
+            swarasthans, int(melakartha_number), int(quotient), int(remainder))
         return swarasthans
 
     def get_module_name(self):
