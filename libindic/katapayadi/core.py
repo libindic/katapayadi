@@ -18,15 +18,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-# If you find any bugs or have any suggestions email: santhosh.thottingal@gmail.com
+# If you find any bugs or have any suggestions email:
+# santhosh.thottingal@gmail.com
 # URL: http://www.smc.org.in
 
 from silpa_common import langdetect
 import indicsyllabifier
 
+
 class Katapayadi:
     """Katapayadi class. Instantiate to access the methods.
     """
+
     def get_number(self, word):
         """get the number corressponding to the katapayadi word
 
@@ -37,28 +40,64 @@ class Katapayadi:
         word = word.strip()
         word = word.split(" ")[0]
         lang_ka_bases = {'hi_IN': 0x0915, 'bn_IN': 0x0995,
-                        'pa_IN': 0x0A15, 'gu_IN': 0x0A95,
-                        'or_IN': 0x0B15, 'ta_IN': 0x0B95,
-                        'te_IN': 0x0C15, 'ka_IN': 0x0C95,
-                        'ml_IN': 0x0D15}
+                         'pa_IN': 0x0A15, 'gu_IN': 0x0A95,
+                         'or_IN': 0x0B15, 'ta_IN': 0x0B95,
+                         'te_IN': 0x0C15, 'ka_IN': 0x0C95,
+                         'ml_IN': 0x0D15}
         syllablizer_handle = indicsyllabifier.getInstance()
         syllables = syllablizer_handle.syllabify(word)
         number = ""
-        # Check if the dectected language is in list. If not, display unsupported langusge
+        # Check if the dectected language is in list. If not, display
+        # unsupported langusge
         try:
             src_lang_code = langdetect.detect_lang(word)[word]
             base = lang_ka_bases[src_lang_code]
-        except Exception as e:
-            print e
+        except:
             return "Unsupported Language"
         for cluster in syllables:
-            number = (self.__get_number_for_syllable(cluster, base)
-                      + number)
+            number = (self.__get_number_for_syllable(cluster, base) + number)
         return int(number)
 
     def __get_number_for_syllable(self, syllable, base):
 
-        katapayadi = [1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,0,1,2,3,4,5,1,2,0,3,9,0,4,5,6,7,8]
+        katapayadi = [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            0,
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            1,
+            2,
+            0,
+            3,
+            9,
+            0,
+            4,
+            5,
+            6,
+            7,
+            8]
         length = len(syllable)
         index = length - 1
 
@@ -69,10 +108,69 @@ class Katapayadi:
             if offset >= 0:
                 try:
                     return str(katapayadi[offset])
-                except:
+                except BaseException:
                     pass
             index -= 1
         return "0"
+
+    def set_swarasthans(self, swarasthans,
+                        melakartha_number, quotient, remainder):
+        swarasthans = self.set_swarasthans_quotient(swarasthans, quotient)
+        swarasthans = self.set_swarasthans_melakartha(
+            swarasthans, melakartha_number)
+        swarasthans.append("Pa")
+        swarasthans = self.set_swarasthans_remainder(swarasthans, remainder)
+        swarasthans.append("Sa")
+        return swarasthans
+
+    def set_swarasthans_quotient(self, swarasthans, quotient):
+        if quotient == 0:
+            swarasthans.append("Ri1")
+            swarasthans.append("Ga1")
+        elif quotient == 1:
+            swarasthans.append("Ri1")
+            swarasthans.append("Ga2")
+        elif quotient == 2:
+            swarasthans.append("Ri1")
+            swarasthans.append("Ga3")
+        elif quotient == 3:
+            swarasthans.append("Ri2")
+            swarasthans.append("Ga2")
+        elif quotient == 4:
+            swarasthans.append("Ri2")
+            swarasthans.append("Ga3")
+        elif quotient == 5:
+            swarasthans.append("Ri3")
+            swarasthans.append("Ga3")
+        return swarasthans
+
+    def set_swarasthans_melakartha(self, swarasthans, melakartha_number):
+        if melakartha_number <= 36:
+            swarasthans.append("Ma1")
+        elif melakartha_number > 36 and melakartha_number <= 72:
+            swarasthans.append("Ma2")
+        return swarasthans
+
+    def set_swarasthans_remainder(self, swarasthans, remainder):
+        if remainder == 0:
+            swarasthans.append("Da1")
+            swarasthans.append("Ni1")
+        elif remainder == 1:
+            swarasthans.append("Da1")
+            swarasthans.append("Ni2")
+        elif remainder == 2:
+            swarasthans.append("Da1")
+            swarasthans.append("Ni3")
+        elif remainder == 3:
+            swarasthans.append("Da2")
+            swarasthans.append("Ni2")
+        elif remainder == 4:
+            swarasthans.append("Da2")
+            swarasthans.append("Ni3")
+        elif remainder == 5:
+            swarasthans.append("Da3")
+            swarasthans.append("Ni3")
+        return swarasthans
 
     def get_swarasthanas(self, raga):
         """
@@ -81,56 +179,16 @@ class Katapayadi:
         swarasthans = ["Sa"]
         try:
             number = int(str(raga))
-        except:
+        except BaseException:
             number = self. get_number(raga)
             if number < 99:
                 return "Could not recognize the raga"
         melakartha_number = number % 100
         quotient = (melakartha_number - 1) / 6
-        remainder = (melakartha_number-1) % 6
+        remainder = (melakartha_number - 1) % 6
         quotient = quotient % 6
-        if quotient == 0:
-            swarasthans.append("Ri1")
-            swarasthans.append("Ga1")
-        if quotient == 1:
-            swarasthans.append("Ri1")
-            swarasthans.append("Ga2")
-        if quotient == 2:
-            swarasthans.append("Ri1")
-            swarasthans.append("Ga3")
-        if quotient == 3:
-            swarasthans.append("Ri2")
-            swarasthans.append("Ga2")
-        if quotient == 4:
-            swarasthans.append("Ri2")
-            swarasthans.append("Ga3")
-        if quotient == 5:
-            swarasthans.append("Ri3")
-            swarasthans.append("Ga3")
-        if melakartha_number <= 36:
-            swarasthans.append("Ma1")
-        if melakartha_number > 36 and melakartha_number <= 72:
-            swarasthans.append("Ma2")
-        swarasthans.append("Pa")
-        if remainder == 0:
-            swarasthans.append("Da1")
-            swarasthans.append("Ni1")
-        if remainder == 1:
-            swarasthans.append("Da1")
-            swarasthans.append("Ni2")
-        if remainder == 2:
-            swarasthans.append("Da1")
-            swarasthans.append("Ni3")
-        if remainder == 3:
-            swarasthans.append("Da2")
-            swarasthans.append("Ni2")
-        if remainder == 4:
-            swarasthans.append("Da2")
-            swarasthans.append("Ni3")
-        if remainder == 5:
-            swarasthans.append("Da3")
-            swarasthans.append("Ni3")
-        swarasthans.append("Sa")
+        swarasthans = self.set_swarasthans(
+            swarasthans, melakartha_number, quotient, remainder)
         return swarasthans
 
     def get_module_name(self):
