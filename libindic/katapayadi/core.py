@@ -22,8 +22,8 @@
 # santhosh.thottingal@gmail.com
 # URL: http://www.smc.org.in
 
-from silpa_common import langdetect
-import indicsyllabifier
+from libindic.utils import langdetect
+from libindic.syllabifier import Syllabifier
 
 
 class Katapayadi:
@@ -44,7 +44,7 @@ class Katapayadi:
                          'or_IN': 0x0B15, 'ta_IN': 0x0B95,
                          'te_IN': 0x0C15, 'ka_IN': 0x0C95,
                          'ml_IN': 0x0D15}
-        syllablizer_handle = indicsyllabifier.getInstance()
+        syllablizer_handle = Syllabifier()
         syllables = syllablizer_handle.syllabify(word)
         number = ""
         # Check if the dectected language is in list. If not, display
