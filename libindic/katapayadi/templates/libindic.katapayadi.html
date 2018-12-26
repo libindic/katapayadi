@@ -6,14 +6,15 @@ $(document).ready(function(){
         event.preventDefault();
         var word= $("input[name=word]").val();
         var jsonRequest = {
-          "method" :  "katapayadi.get_number",
+          "module": "libindic.katapayadi",
+          "method" : "get_number",
           "params" : [word],
           "id" : ""
         };
         $.ajax({
             type: "POST",
             contentType: "application/json; charset=utf-8",
-            url: "JSONRPC",
+            url: "api",
             data: JSON.stringify(jsonRequest),
             dataType: "json",
             beforeSend: function(){
@@ -39,14 +40,15 @@ $(document).ready(function(){
         var number= $("select[name=raga]").val(),
             resulthtml = "Selected Raga is Melakarta Raga Number <b>" +number+ "</b>.<br/>",
             jsonRequest = {
-                "method" :  "katapayadi.get_swarasthanas",
+                "module": "libindic.katapayadi",
+                "method" :  "get_swarasthanas",
                 "params" : [number],
                 "id" : ""
             };
         $.ajax({
             type: "POST",
             contentType: "application/json; charset=utf-8",
-            url: "JSONRPC",
+            url: "api",
             data: JSON.stringify(jsonRequest),
             dataType: "json",
             beforeSend:function(){
